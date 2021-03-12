@@ -51,18 +51,18 @@ export default class User extends BaseEntity {
   @BeforeInsert()
   @BeforeUpdate()
   public hashPassword(): void | never {
-    if (!this.password) {
+    if (!this.encryptedPassword) {
       throw new Error('Password is not defined')
     }
 
-    this.password = bcrypt.hashSync(this.password, User.SALT_ROUND)
+    this.encryptedPassword = bcrypt.hashSync(this.encryptedPassword, User.SALT_ROUND)
   }
 
   /**
    * Methods
    */
   public checkPassword(uncryptedPassword: string): boolean {
-    return bcrypt.compareSync(uncryptedPassword, this.password)
+    return bcrypt.compareSync(uncryptedPassword, this.encryptedPassword)
   }
 
   public toJSON(): User {
